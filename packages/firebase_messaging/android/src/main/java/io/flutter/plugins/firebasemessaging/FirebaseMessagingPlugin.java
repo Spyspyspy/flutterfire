@@ -17,8 +17,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -183,19 +181,20 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
       FlutterFirebaseMessagingService.onInitialized();
       result.success(true);
     } else if ("configure".equals(call.method)) {
-      FirebaseInstanceId.getInstance()
-          .getInstanceId()
-          .addOnCompleteListener(
-              new OnCompleteListener<InstanceIdResult>() {
-                @Override
-                public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                  if (!task.isSuccessful()) {
-                    Log.w(TAG, "getToken, error fetching instanceID: ", task.getException());
-                    return;
-                  }
-                  channel.invokeMethod("onToken", task.getResult().getToken());
-                }
-              });
+      FirebaseMessaging.getInstance().getToken()
+.addOnCompleteListener(new OnCompleteListener<String>() {
+    @Override
+    public void onComplete(@NonNull Task<String> task) {
+      if (!task.isSuccessful()) {
+        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+        return;
+      }
+
+      // Get new FCM registration token
+      String token = task.getResult();
+channel.invokeMethod("onToken", token);
+    }
+});
       if (mainActivity != null) {
         sendMessageFromIntent("onLaunch", mainActivity.getIntent());
       }
@@ -235,21 +234,20 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
                 }
               });
     } else if ("getToken".equals(call.method)) {
-      FirebaseInstanceId.getInstance()
-          .getInstanceId()
-          .addOnCompleteListener(
-              new OnCompleteListener<InstanceIdResult>() {
-                @Override
-                public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                  if (!task.isSuccessful()) {
-                    Log.w(TAG, "getToken, error fetching instanceID: ", task.getException());
-                    result.success(null);
-                    return;
-                  }
+            FirebaseMessaging.getInstance().getToken()
+.addOnCompleteListener(new OnCompleteListener<String>() {
+    @Override
+    public void onComplete(@NonNull Task<String> task) {
+      if (!task.isSuccessful()) {
+        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+        return;
+      }
 
-                  result.success(task.getResult().getToken());
-                }
-              });
+      // Get new FCM registration token
+      String token = task.getResult();
+result.success(task.getResult().token());
+    }
+});
     } else if ("deleteInstanceID".equals(call.method)) {
       new Thread(
               new Runnable() {
