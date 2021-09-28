@@ -265,7 +265,7 @@ result.success(token);
                             }
                           });
                     }
-                  } catch (IOException ex) {
+                  } catch (Exception ex) {
                     Log.e(TAG, "deleteInstanceID, error:", ex);
                     if (mainActivity != null) {
                       mainActivity.runOnUiThread(
