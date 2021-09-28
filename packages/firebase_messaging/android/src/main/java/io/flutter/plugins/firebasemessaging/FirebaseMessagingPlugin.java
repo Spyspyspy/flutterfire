@@ -254,7 +254,7 @@ result.success(token);
                 @Override
                 public void run() {
                   try {
-                    FirebaseMessaging.getInstance().deleteInstanceId();
+                    FirebaseMessaging.getInstance().deleteToken();
                     //FirebaseInstanceId.getInstance().deleteInstanceId();
                     if (mainActivity != null) {
                       mainActivity.runOnUiThread(
