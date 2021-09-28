@@ -245,7 +245,7 @@ channel.invokeMethod("onToken", token);
 
       // Get new FCM registration token
       String token = task.getResult();
-result.success(task.getResult().token());
+result.success(token);
     }
 });
     } else if ("deleteInstanceID".equals(call.method)) {
