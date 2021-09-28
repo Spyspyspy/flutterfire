@@ -1,0 +1,30 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="io.flutter.plugins.firebasemessaging">
+
+  <application>
+    <service android:name=".FlutterFirebaseMessagingService">
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+      </intent-filter>
+    </service>
+    <service android:name="com.google.firebase.components.ComponentDiscoveryService">
+      <meta-data android:name="com.google.firebase.components:io.flutter.plugins.firebasemessaging.FlutterFirebaseAppRegistrar"
+                 android:value="com.google.firebase.components.ComponentRegistrar" />
+    </service>
+
+
+
+
+
+    <service android:name="io.flutter.plugins.firebasemessaging.nexel.CallNotificationService"
+      android:showOnLockScreen="true"/>
+    <receiver
+      android:name="io.flutter.plugins.firebasemessaging.nexel.CallNotificationActionReceiver"
+      android:enabled="true">
+      <intent-filter android:priority="999">
+        <action android:name="ConstantApp.CALL_RECEIVE_ACTION" />
+        <action android:name="ConstantApp.CALL_CANCEL_ACTION"/>
+      </intent-filter>
+    </receiver>
+  </application>
+</manifest>
